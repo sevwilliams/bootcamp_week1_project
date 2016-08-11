@@ -43,10 +43,32 @@ def consolodate_director(col_x, col_y):
         director.append(col_x[i])
     return pd.Series(director)
 
+def review_breakdown(review_col, index):
+    lst = []
+    for group in review_col:
+        lst.append(group[index])
+    return pd.Series(lst)
+
 merged_data['director'] = consolodate_director(merged_data['director_x'], merged_data['director_y'])
+#merged_data['release_month'] = merged_data['release_date'][6:7]
+merged_data['pos_user_reviews'] = review_breakdown(merged_data['num_user_reviews'], 0)
+merged_data['nut_user_reviews'] = review_breakdown(merged_data['num_user_reviews'], 1)
+merged_data['neg_user_reviews'] = review_breakdown(merged_data['num_user_reviews'], 2)
+merged_data['tot_user_reviews'] = review_breakdown(merged_data['num_user_reviews'], 3)
+merged_data['pos_critic_reviews'] = review_breakdown(merged_data['num_critic_reviews'], 0)
+merged_data['nut_critic_reviews'] = review_breakdown(merged_data['num_critic_reviews'], 1)
+merged_data['neg_critic_reviews'] = review_breakdown(merged_data['num_critic_reviews'], 2)
+merged_data['tot_critic_reviews'] = review_breakdown(merged_data['num_critic_reviews'], 3)
 
 merged_data.rename(columns={'year_x':'year'}, inplace=True)
 
 del merged_data['year_y']
 del merged_data['director_x']
 del merged_data['director_y']
+
+merged_data_dropna = merged_data[['production_budget','opening_weekend_take','domestic_gross',
+                                  'release_date_wide','widest_release','worldwide_gross','year', 'runtime_minutes',
+                                  'metascore','user_score','pos_user_reviews','nut_user_reviews','neg_user_reviews',
+                                  'tot_user_reviews','pos_critic_reviews','nut_critic_reviews','neg_critic_reviews',
+                                  'tot_critic_reviews']].dropna()
+
